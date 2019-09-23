@@ -25,5 +25,11 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:api'], function() {
         Route::get('logout', 'api\AuthController@logout');
         Route::get('user', 'api\AuthController@user');
+
+        Route::get('hola', function () {
+            return 'Hola';
+        })->middleware('admin');
     });
 });
+
+
