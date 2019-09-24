@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Illuminate\Support\Facades\Auth;
 use Closure;
 
 class CheckAdmin
@@ -15,13 +15,13 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user()->is_admin == 0) {
-            return response()->json([
-                'status'    =>  'failed',
-                'message'   =>  'Can\'t access as non-admin'
-            ]);
+        if (Auth::user()->is_admin == 1) {
+            return $next($request);
         }
 
-        return $next($request);
+        return response()->json([
+            'status'    =>  'failed',
+            'message'   =>  'Can\'t access as non-admin'
+        ]);
     }
 }

@@ -15,7 +15,6 @@ class AuthController extends Controller {
 
     public function signup(Request $request) {
         try {
-
             $validator = Validator::make($request->all(), [
                 'name'  =>  'required|string',
                 'email' =>  'required|string|email|unique:users',
@@ -71,7 +70,7 @@ class AuthController extends Controller {
             if (!Auth::attempt($credentials)) {
                 return response()->json([
                     'status'    =>  'failed',
-                    'message'   => 'User is not authorized'
+                    'message'   =>  'User is not authorized'
                 ], 401);
             }
     

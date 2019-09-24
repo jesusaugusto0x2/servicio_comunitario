@@ -30,6 +30,9 @@ class CreateCampsPaymentsTable extends Migration
                 $table->unsignedBigInteger('user_id');
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
+                $table->unsignedBigInteger('bank_id');
+                $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade');
+
                 $table->timestamps();
             });
         }

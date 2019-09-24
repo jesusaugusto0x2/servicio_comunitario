@@ -13,12 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-/*Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});*/
-
 Route::group(['prefix' => 'auth'], function () {
-
     Route::post('login', 'api\AuthController@login');
     Route::post('signup', 'api\AuthController@signup');
   
@@ -32,4 +27,14 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+//Camps routes
+Route::group(['prefix' => 'camp'], function () {
+    Route::group(['middleware' => 'auth:api'], function() {
+        Route::post('store', 'api\CampController@store')->middleware('admin');
+        Route::put('edit/{id}', 'api\CampController@edit')->middleware('admin');
+        Route::get('get/{id}', 'api\CampController@get');
+        Route::get('index', 'api\CampController@index');
+    });    
+});
 
+Route::post('testphoto', 'api\CampController@testphoto');

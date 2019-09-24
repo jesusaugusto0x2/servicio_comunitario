@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Camp extends Model
+class Bank extends Model
 {
-    protected $table = 'camps';
-    
+    protected $table = 'banks';
+
     protected $fillable = [
-        'location', 'entries', 'cost', 'date'
+        'name'
     ];
 
     protected $hidden = [
