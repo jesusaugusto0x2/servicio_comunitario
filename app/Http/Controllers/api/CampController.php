@@ -5,13 +5,38 @@ namespace App\Http\Controllers\api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 use App\Camp;
+use App\CampPhoto;
 use App\Http\Controllers\Controller;
-use Image\Image;
+use Carbon\Carbon;
+use Image;
 
 class CampController extends Controller
-{
+{  
+    /**
+     * Private function to save images related to a camp
+     * 
+     * @param images refrences an array of base64 strings
+     * @param camp is the camp we're saving images into
+     */
+    private function saveImages ($camp, $images) {
+        foreach ($images as $img) {
+            $image = Image::make($img)->stream('png', 90);
+
+            $current_time = Carbon::now()->format('Ymdhis');
+            $path = '/camp_' . $camp->id . '/' . $current_time . '.png';
+
+            Storage::disk('images')->put($path, $image);
+
+            CampPhoto::create([
+                'camp_id'   =>  $camp->id,
+                'url'       =>  config('app.url') . 'images' . $path,
+            ]);
+        }
+    }
+
     /**
      * Get all registered camps in the 
      */
@@ -60,6 +85,10 @@ class CampController extends Controller
                 'date'      =>  $request->date
             ]);
 
+            if (isset($request->fotos)) {
+                $this->saveImages($camp, $request->fotos);
+            }
+
             return response()->json([
                 'status'    =>  'success',
                 'message'   =>  'Camp succesfully created',
@@ -91,7 +120,7 @@ class CampController extends Controller
             return response()->json([
                 'status'    =>  'success',
                 'message'   =>  'Camp found!',
-                'camp'      =>  $camp
+                'camp'      =>  $camp->getData()
             ]);
 
         } catch (\Exception $e) {
@@ -135,8 +164,12 @@ class CampController extends Controller
     }
 
     public function testphoto (Request $request) {
-        $ok = Image::make($request->base64img);
+        $current_time = Carbon::now()->format('Ymdhis');
+        
 
-        return 'Ok';
+        $ok = Image::make($request->base64img)->stream('png', 90);
+        Storage::disk('images')->put($current_time . '.png', $ok);
+        //$ok->save($path  . '/' . $current_time . '.png' );
+        return config('app.url');
     }
 }
