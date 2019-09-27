@@ -34,7 +34,20 @@ Route::group(['prefix' => 'camp'], function () {
         Route::put('edit/{id}', 'api\CampController@edit')->middleware('admin');
         Route::get('get/{id}', 'api\CampController@get');
         Route::get('index', 'api\CampController@index');
+
+        //Payments
+        Route::group(['prefix' => 'payment'], function () {
+            Route::post('store', 'api\CampPaymentController@store');
+        });
     });    
+});
+
+//Configuration routes
+Route::group(['prefix' => 'config'], function () {
+    Route::group(['prefix' => 'get'], function () {
+        Route::get('banks', 'api\ConfigurationController@getBanks');
+        Route::get('paymentMethods', 'api\ConfigurationController@getPaymentMethods');
+    });
 });
 
 Route::post('testphoto', 'api\CampController@testphoto');

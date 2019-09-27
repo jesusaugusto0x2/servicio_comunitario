@@ -38,7 +38,7 @@ class CampController extends Controller
     }
 
     /**
-     * Get all registered camps in the 
+     * Get all registered camps in the database
      */
     public function index () {
         try {
