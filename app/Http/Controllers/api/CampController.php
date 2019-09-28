@@ -145,13 +145,27 @@ class CampController extends Controller
                 ], 404);
             }
 
-            $camp->update([
+            if (isset($request->location)) {
+                $camp->location = $request->location;
+            }
 
-            ]);
+            if (isset($request->cost)) {
+                $camp->cost = $request->cost;
+            }
+
+            if (isset($request->entries)) {
+                $camp->entries = $request->entries;
+            }
+
+            if (isset($request->date)) {
+                $camp->date = $request->date;
+            }
+
+            $camp->save();
 
             return response()->json([
                 'status'    =>  'success',
-                'message'   =>  'Camp succesfully created',
+                'message'   =>  'Camp succesfully updated!',
                 'camp'      =>  $camp
             ]);
 
@@ -165,8 +179,6 @@ class CampController extends Controller
 
     public function testphoto (Request $request) {
         $current_time = Carbon::now()->format('Ymdhis');
-        
-
         $ok = Image::make($request->base64img)->stream('png', 90);
         Storage::disk('images')->put($current_time . '.png', $ok);
         //$ok->save($path  . '/' . $current_time . '.png' );

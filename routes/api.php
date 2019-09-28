@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+//Authenthication routes
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'api\AuthController@login');
     Route::post('signup', 'api\AuthController@signup');
@@ -20,16 +21,12 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:api'], function() {
         Route::get('logout', 'api\AuthController@logout');
         Route::get('user', 'api\AuthController@user');
-
-        Route::get('hola', function () {
-            return 'Hola';
-        })->middleware('admin');
     });
 });
 
-//Camps routes
-Route::group(['prefix' => 'camp'], function () {
-    Route::group(['middleware' => 'auth:api'], function() {
+Route::group(['middleware' => 'auth:api'], function () {
+    //Camps routes
+    Route::group(['prefix' => 'camp'], function () {
         Route::post('store', 'api\CampController@store')->middleware('admin');
         Route::put('edit/{id}', 'api\CampController@edit')->middleware('admin');
         Route::get('get/{id}', 'api\CampController@get');
@@ -37,16 +34,21 @@ Route::group(['prefix' => 'camp'], function () {
 
         //Payments
         Route::group(['prefix' => 'payment'], function () {
-            Route::post('store', 'api\CampPaymentController@store');
+            Route::put('validate/{id}', 'api\CampPaymentController@validatePayment')->middleware('admin');
+            Route::post('store', 'api\CampPaymentController@store');            
         });
-    });    
-});
+    });
 
-//Configuration routes
-Route::group(['prefix' => 'config'], function () {
-    Route::group(['prefix' => 'get'], function () {
-        Route::get('banks', 'api\ConfigurationController@getBanks');
-        Route::get('paymentMethods', 'api\ConfigurationController@getPaymentMethods');
+    //Configuration routes
+    Route::group(['prefix' => 'config'], function () {
+        Route::put('makeAdmin/{user_id}', 'api\ConfigurationController@makeAdmin')->middleware('admin');
+        Route::put('blockAllowUser/{user_id}', 'api\ConfigurationController@blockAllowUser')->middleware('admin');
+
+        //Get routes
+        Route::group(['prefix' => 'get'], function () {
+            Route::get('banks', 'api\ConfigurationController@getBanks');
+            Route::get('paymentMethods', 'api\ConfigurationController@getPaymentMethods');
+        });
     });
 });
 

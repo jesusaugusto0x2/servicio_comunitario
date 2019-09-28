@@ -15,7 +15,6 @@ use Carbon\Carbon;
 use App\User;
 use Image;
 
-
 class CampPaymentController extends Controller
 {
     /**
@@ -89,6 +88,39 @@ class CampPaymentController extends Controller
                 'message'   =>  'Payment successfully stored',
                 'data'      =>  $payment
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'    =>  'failed',
+                'message'   =>  $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Method to validate a payment, valid only for admins
+     */
+    public function validatePayment ($payment_id) {
+        try {
+            Auth::user();
+
+            $payment = CampPayment::find($payment_id);
+
+            if (!$payment) {
+                return response()->json([
+                    'status'    =>  'failed',
+                    'message'   =>  'Payment is not registered in our databases'
+                ], 404);
+            }
+
+            $payment->validated = 1;
+            $payment->save();
+
+            return response()->json([
+                'status'    =>  'success',
+                'message'   =>  'Payment validated',
+                'payment'   =>  $payment
+            ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status'    =>  'failed',
