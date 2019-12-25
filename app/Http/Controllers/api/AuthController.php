@@ -20,7 +20,7 @@ class AuthController extends Controller {
                 'email' =>  'required|string|email|unique:users',
                 'password'  =>  'required|string'
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'status'    =>  'failed',
@@ -33,12 +33,13 @@ class AuthController extends Controller {
                 'email'    => $request->email,
                 'password' => bcrypt($request->password),
             ]);
-    
+
             $user->save();
-    
+
             return response()->json([
                 'status'    =>  'success',
-                'message'   =>  'User created!'
+                'message'   =>  'User created!',
+                'user'  =>  $user
             ], 201);
 
         } catch (\Exception $e) {
@@ -57,38 +58,39 @@ class AuthController extends Controller {
                 'password'    => 'required|string',
                 'remember_me' => 'boolean',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'status'    =>  'failed',
                     'message'   =>  'Missing items or invalid email'
                 ]);
             }
-    
+
             $credentials = request(['email', 'password']);
-    
+
             if (!Auth::attempt($credentials)) {
                 return response()->json([
                     'status'    =>  'failed',
                     'message'   =>  'User is not authorized'
                 ], 401);
             }
-    
+
             $user = $request->user();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
-    
+
             if ($request->remember_me) {
                 $token->expires_at = Carbon::now()->addWeeks(1);
             }
-    
+
             $token->save();
-    
+
             return response()->json([
                 'status'        =>  'success',
                 'access_token'  =>  $tokenResult->accessToken,
                 'token_type'    =>  'Bearer',
                 'expires_at'    =>  Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+                'user'          =>  $user
             ], 200);
 
         } catch (\Exception $e) {
@@ -102,17 +104,17 @@ class AuthController extends Controller {
     public function logout(Request $request) {
         try {
             $request->user()->token()->revoke();
-        
+
             return response()->json([
                 'status'    =>  'success',
                 'message'   =>    'Successfully logged out'
             ], 200);
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'status'    =>  'failed',
                 'error'     =>  $e->getMessage()
-            ]); 
+            ]);
         }
     }
 
@@ -124,7 +126,7 @@ class AuthController extends Controller {
             return response()->json([
                 'status'    =>  'failed',
                 'error'     =>  $e->getMessage()
-            ]);     
+            ]);
         }
     }
 }
