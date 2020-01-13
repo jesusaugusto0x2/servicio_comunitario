@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'api\AuthController@login');
     Route::post('signup', 'api\AuthController@signup');
-  
+
     Route::group(['middleware' => 'auth:api'], function() {
         Route::get('logout', 'api\AuthController@logout');
         Route::get('user', 'api\AuthController@user');
@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         //Payments
         Route::group(['prefix' => 'payment'], function () {
             Route::put('validate/{id}', 'api\CampPaymentController@validatePayment')->middleware('admin');
-            Route::post('store', 'api\CampPaymentController@store');            
+            Route::post('store', 'api\CampPaymentController@store');
         });
     });
 
@@ -49,6 +49,13 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('banks', 'api\ConfigurationController@getBanks');
             Route::get('paymentMethods', 'api\ConfigurationController@getPaymentMethods');
         });
+    });
+
+    //Admin routes
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('users', 'api\AdminController@getUsers')->middleware('admin');
+        Route::get('user/{user_id}', 'api\AdminController@getSpecUser')->middleware('admin');
+        Route::put('changePassword/{user_id}', 'api\AdminController@changeUserPass')->middleware('admin');
     });
 });
 
