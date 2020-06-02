@@ -16,6 +16,9 @@ use Illuminate\Http\Request;
 //Authenthication routes
 
 Route::get('temperature', 'api\IOTController@temperature');
+Route::get('humidity', 'api\IOTController@humidity');
+Route::get('temperature_threshold', 'api\IOTController@temperature_threshold');
+Route::get('humidity_threshold', 'api\IOTController@humidity_threshold');
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'api\AuthController@login');
