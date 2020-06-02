@@ -8,9 +8,9 @@ use \GuzzleHttp\Client;
 class IOTController extends Controller
 {
     public function temperature (Request $request) {
-        $client = new Client(['base_uri' => 'https://jsonplaceholder.typicode.com']);
+        $client = new Client(['base_uri' => 'http://[2001:660:5307:3116::a482]']);
 
-        $response = $client->request('GET', "todos/1");
+        $response = $client->request('GET', "temperature");
 
         dd($response);
         $data = json_decode($response->getBody());
