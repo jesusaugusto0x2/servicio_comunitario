@@ -41,6 +41,10 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->singleton(Client::class, function($app) use ($baseUrl) {
+    return new Client(['base_uri' => 'http://[2001:660:5307:3116::a482]']);
+});
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: *');
 header('Access-Control-Allow-Headers: *');

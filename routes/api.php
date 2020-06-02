@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 */
 
 //Authenthication routes
+
+Route::get('temperature', 'api\IOTController@temperature');
+
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'api\AuthController@login');
     Route::post('signup', 'api\AuthController@signup');
