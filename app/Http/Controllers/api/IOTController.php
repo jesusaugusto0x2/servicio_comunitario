@@ -12,7 +12,7 @@ class IOTController extends Controller
 
         $response = $client->request('GET', "temperature");
 
-        dd($response);
+        dd($response->getBody()->getContents());
         $data = json_decode($response->getBody());
         dd($data);
         return response()->json([
